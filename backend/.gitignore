@@ -1,0 +1,8 @@
+node_modules/
+*.db
+*.db-journal
+*.key
+*.pem
+.env
+.env.*
+!.env.example

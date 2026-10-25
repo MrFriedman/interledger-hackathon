@@ -1,12 +1,12 @@
 import {
   createAuthenticatedClient,
-  OpenPaymentsClientError,
   isFinalizedGrant,
 } from "@interledger/open-payments";
 import readline from "readline/promises";
 import express from "express";
 import bodyParser from "body-parser";
 import sqlite3 from "sqlite3";
+import { getOpenPaymentsConfig } from "./paymentsConfig.js";
 
 //const bodyParser = require("body-parser");
 //const sqlite3 = require("sqlite3").verbose();
@@ -204,17 +204,27 @@ app.post("/reject_offer", (req, res) => {
 });
 
 app.post("/make_payments", async (req, res) => {
+  const config = getOpenPaymentsConfig();
+  if (config.missing.length > 0) {
+    return res.status(503).json({
+      error:
+        "Open Payments is not configured. Set the variables in backend/.env.example.",
+      missing: config.missing,
+    });
+  }
+
+  try {
   const client = await createAuthenticatedClient({
-    walletAddressUrl: "https://ilp.interledger-test.dev/customer1", // Make sure the wallet address starts with https:// (not $), and has no trailing slashes
-    privateKey: "private (8).key",
-    keyId: "d1947b09-ca14-442d-afc6-c9a9165d05dd",
+    walletAddressUrl: config.walletAddressUrl,
+    privateKey: config.privateKey,
+    keyId: config.keyId,
   });
 
   const sendingWalletAddress = await client.walletAddress.get({
-    url: "https://ilp.interledger-test.dev/customer1", // Make sure the wallet address starts with https:// (not $)
+    url: config.walletAddressUrl,
   });
   const receivingWalletAddress = await client.walletAddress.get({
-    url: "https://ilp.interledger-test.dev/applicant", // Make sure the wallet address starts with https:// (not $)
+    url: config.receivingWalletAddressUrl,
   });
 
   console.log(
@@ -363,18 +373,21 @@ app.post("/make_payments", async (req, res) => {
       accessToken: outgoingPaymentGrant.continue.access_token.value,
     });
   } catch (err) {
-    if (err instanceof OpenPaymentsClientError) {
-      console.log(grantContinuationErrorMessage);
-    }
-
-    throw err;
+    console.log(grantContinuationErrorMessage);
+    return res.status(400).json({
+      error:
+        "Could not continue the outgoing payment grant. Accept the interaction URL, then try again.",
+    });
   }
 
   if (!isFinalizedGrant(finalizedOutgoingPaymentGrant)) {
     console.log(
       "There was an error continuing the grant. You probably have not accepted the grant at the url."
     );
-    process.exit();
+    return res.status(400).json({
+      error:
+        "Outgoing payment grant was not finalized. Accept the interaction URL, then try again.",
+    });
   }
 
   console.log(
@@ -399,6 +412,17 @@ app.post("/make_payments", async (req, res) => {
     "\nStep 7: Created outgoing payment. Funds will now move from the outgoing payment to the incoming payment.",
     outgoingPayment
   );
+
+  return res.status(200).json({
+    success: true,
+    outgoingPaymentId: outgoingPayment.id,
+  });
+  } catch (err) {
+    console.error("Open Payments request failed");
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Open Payments request failed." });
+    }
+  }
 });
 
 // Start the server

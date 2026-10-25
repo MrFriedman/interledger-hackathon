@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import DemoRoster from "../components/DemoRoster";
 import "../css/ApplicantHome.css";
 
 function ApplicantHome() {
@@ -48,6 +48,7 @@ function ApplicantHome() {
             </button>
           </div>
         </div>
+        <DemoRoster kind="employers" />
       </main>
 
       {/* Footer Navigation */}

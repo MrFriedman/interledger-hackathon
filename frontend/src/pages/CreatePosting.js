@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import httpClient from "../httpClient";
 import { useNavigate } from "react-router-dom";
 import "../css/CreatePosting.css";
