@@ -1,6 +1,6 @@
-import React from "react";
-import "../css/CreatePosting.css";
 import { useNavigate } from "react-router-dom";
+import DemoRoster from "../components/DemoRoster";
+import "../css/CreatePosting.css";
 
 function CustomerHome() {
   const navigate = useNavigate();
@@ -47,6 +47,7 @@ function CustomerHome() {
             </button>
           </div>
         </div>
+        <DemoRoster kind="employees" />
       </main>
 
       {/* Footer Navigation */}

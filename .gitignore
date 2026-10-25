@@ -1,0 +1,20 @@
+# Wallet private keys and other local secrets.
+# A key was previously committed; removing it here does not purge git history.
+*.key
+*.pem
+
+# Environment files may contain Open Payments credentials.
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local sqlite databases
+backend/*.db
+backend/*.db-journal
+
+# Dependencies and production builds
+node_modules/
+frontend/build/

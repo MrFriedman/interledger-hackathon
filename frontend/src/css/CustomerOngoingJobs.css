@@ -97,6 +97,15 @@ body {
   transform: translateY(-3px);
 }
 
+.completed-rectangle {
+  background-color: #1f7a3a;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+  font-family: "Poppins", sans-serif;
+}
+
 .footer-nav {
   display: flex;
   justify-content: space-around;

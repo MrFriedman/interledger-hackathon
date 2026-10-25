@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import httpClient from "../httpClient";
-import { useNavigate } from "react-router-dom";
+import { formatRand } from "../format";
 import "../css/CustomerViewPostings.css";
 
 function CustomerViewPostings() {
@@ -59,6 +59,7 @@ function CustomerViewPostings() {
       job_type: jobListings.find((job) => job.id === jobId).job_type, // Get the job type from the job listings
       location: jobListings.find((job) => job.id === jobId).location, // Get the job location
       pay_per_hour: jobListings.find((job) => job.id === jobId).pay_per_hour, // Get the pay per hour
+      applicant_id: jobListings.find((job) => job.id === jobId).applicant_id,
       address: formData.address,
       start_date: formData.startDate,
       hours_per_day: formData.hoursPerDay,
@@ -117,11 +118,16 @@ function CustomerViewPostings() {
           {filteredJobListings.map((job) => (
             <div className="job-card" key={job.id}>
               <h2>Offering: {job.job_type}</h2>
+              {job.employee_name ? (
+                <p className="job-details">
+                  <strong>Worker:</strong> {job.employee_name}
+                </p>
+              ) : null}
               <p className="job-details">
                 <strong>Location:</strong> {job.location}
               </p>
               <p className="job-details">
-                <strong>Pay Per Hour:</strong> R{job.pay_per_hour}
+                <strong>Pay Per Hour:</strong> {formatRand(job.pay_per_hour)}
               </p>
               <button
                 className="action-button"

@@ -6,6 +6,7 @@ import ApplicantViewOffers from "./pages/ApplicantViewOffers";
 import CustomerHome from "./pages/CustomerHome";
 import CustomerViewPostings from "./pages/CustomerViewPostings";
 import CustomerOngoingJobs from "./pages/CustomerOngoingJobs";
+import DemoBanner from "./components/DemoBanner";
 
 import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -13,6 +14,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 const Router = () => {
   return (
     <BrowserRouter>
+      <div className="demo-shell">
+      <DemoBanner />
       <Routes>
         <Route path="/" element={<ApplicantHome />} />
         <Route path="/create_posting" element={<CreatePosting />} />
@@ -26,6 +29,7 @@ const Router = () => {
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </div>
     </BrowserRouter>
   );
 };
